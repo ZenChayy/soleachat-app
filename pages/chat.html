@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoleaChat • Messages</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Popup demande d'ami -->
+    <div id="friendRequestPopup" class="popup-overlay">
+        <div class="popup">
+            <div class="popup-header">
+                <div class="popup-avatar">C</div>
+            </div>
+            <div class="popup-body">
+                <div class="username">Clara_lcd</div>
+                <div class="user-age">14 ans</div>
+                <div class="request-text">
+                    Vous a envoyé une demande d'ami 💕
+                </div>
+            </div>
+            <div class="popup-actions">
+                <button id="acceptFriendBtn" class="btn-primary">Accepter</button>
+                <button id="declineFriendBtn" class="btn-decline">Refuser</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="chat-container">
+        <!-- Header principal -->
+        <header class="chat-header">
+            <div class="user-info">
+                <div class="avatar" id="userAvatar"></div>
+                <div class="user-details">
+                    <h3 id="userName"></h3>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="logoutBtn" class="btn-icon" title="Déconnexion">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16,17 21,12 16,7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </button>
+            </div>
+        </header>
+        
+        <div class="chat-main">
+            <!-- Sidebar conversations -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3>Messages</h3>
+                </div>
+                <div class="search-box">
+                    <input type="text" placeholder="Rechercher...">
+                </div>
+                <div class="contacts-list" id="contactsList">
+                    <!-- Clara sera affichée ici -->
+                </div>
+            </aside>
+            
+            <!-- Zone de chat principale -->
+            <main class="chat-area">
+                <!-- En-tête de la conversation -->
+                <div class="chat-header-bar hidden" id="chatHeaderBar">
+                    <div class="contact-avatar clara-profile">C</div>
+                    <div>
+                        <div class="contact-name" id="chatPartnerName">Clara</div>
+                        <div class="contact-status">Active maintenant</div>
+                    </div>
+                </div>
+                
+                <!-- Messages -->
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message" id="welcomeMessage">
+                        <span class="heart-icon">💬</span>
+                        <h2>Bienvenue sur SoleaChat</h2>
+                        <p>Accepte la demande d'ami pour commencer</p>
+                    </div>
+                </div>
+                
+                <!-- Input message -->
+                <div class="chat-input hidden" id="chatInput">
+                    <form id="messageForm">
+                        <input type="text" id="messageInput" placeholder="Message..." autocomplete="off">
+                        <button type="submit" class="btn-send">Envoyer</button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="../js/config.js"></script>
+    <script src="../js/telegram-bot.js"></script>
+    <script src="../js/chat.js"></script>
+</body>
+</html>

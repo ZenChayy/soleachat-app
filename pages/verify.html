@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoleaChat - Vérification</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <div class="logo">
+                <h1>SoleaChat</h1>
+                <p>Vérification de votre numéro</p>
+            </div>
+            
+            <div class="auth-form">
+                <h2>Code de vérification</h2>
+                <p id="phoneDisplay">Code envoyé au numéro indiqué</p>
+                
+                <form id="verificationForm">
+                    <div class="form-group">
+                        <label for="verificationCode">Code reçu par SMS</label>
+                        <input type="text" id="verificationCode" name="verificationCode" 
+                               required placeholder="123456" pattern="[0-9]{6}" maxlength="6">
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Vérifier</button>
+                </form>
+                
+                <button id="resendCode" class="btn-secondary">
+                    Renvoyer le code (<span id="countdown">60</span>s)
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../js/config.js"></script>
+    <script src="../js/telegram-bot.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // Démarrer le compte à rebours
+        let countdown = 60;
+        const countdownElement = document.getElementById('countdown');
+        const resendBtn = document.getElementById('resendCode');
+        
+        const timer = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(timer);
+                resendBtn.disabled = false;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

